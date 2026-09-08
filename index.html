@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DIHHLI — Delhi Metro Guide</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f1e3;
+  color: #17313b;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd3c0;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.tagline {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #65777b;
+  font-weight: bold;
+}
+
+.hero {
+  padding: 45px 0 30px;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 10vw, 90px);
+  line-height: .92;
+  letter-spacing: -4px;
+  margin: 15px 0;
+}
+
+.hero h1 span {
+  color: #f5ad20;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #63767b;
+}
+
+.card {
+  background: #fffdf8;
+  border: 1px solid #ddd6c8;
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.05);
+}
+
+label {
+  display: block;
+  margin: 16px 0 7px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #65777b;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #d7d0c3;
+  border-radius: 13px;
+  font-size: 16px;
+  background: #fffdf8;
+  color: #17313b;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 13px;
+  background: #17313b;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.swap {
+  background: #f5ad20;
+  color: #17313b;
+}
+
+#result {
+  display: none;
+  margin-top: 22px;
+  background: #f0eee6;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.routeHeader {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.stat b {
+  display: block;
+  font-size: 18px;
+}
+
+.stat small {
+  color: #65777b;
+}
+
+.lineTitle {
+  font-weight: bold;
+  font-size: 17px;
+  margin: 18px 0 8px;
+}
+
+.station {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.station-name {
+  font-size: 15px;
+}
+
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.interchange {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 8px 0;
+  border-left: 5px solid #f5ad20;
+}
+
+.interchange-title {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.interchange-sub {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #65777b;
+}
+
+.error {
+  color: #a33;
+  font-weight: bold;
+}
+
+.note {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #65777b;
+}
+
+@media (max-width: 600px) {
+
+  body {
+    padding: 15px;
+  }
+
+  .hero {
+    padding-top: 35px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">🚇 DIHHLI</div>
+  <div class="tagline">DELHI METRO GUIDE</div>
+</header>
+
+
+<section class="hero">
+
+  <div class="tagline">
+    EVERYDAY ROUTES, MADE CLEAR
+  </div>
+
+  <h1>
+    Get there<br>
+    <span>without<br>
+    the guesswork.</span>
+  </h1>
+
+  <p>
+    Choose two metro stations and Raasta will calculate
+    your route, interchanges, stops and estimated journey.
+  </p>
+
+</section>
+
+
+<section class="card">
+
+  <div class="tagline">
+    PLAN A JOURNEY
+  </div>
+
+
+  <label>
+    STARTING FROM
+  </label>
+
+  <input
+    id="origin"
+    list="stations"
+    placeholder="Example: Dwarka Sector 21"
+  >
+
+
+  <label>
+    GOING TO
+  </label>
+
+  <input
+    id="destination"
+    list="stations"
+    placeholder="Example: Rajiv Chowk"
+  >
+
+
+  <datalist id="stations"></datalist>
+
+
+  <button onclick="findRoute()">
+    🚇 Find my route
+  </button>
+
+
+  <button
+    class="swap"
+    onclick="swapStations()"
+  >
+    ⇅ Swap stations
+  </button>
+
+
+  <div id="result"></div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   DELHI METRO LINES
+===================================================== */
+
+const lines = {
+
+  Blue: [
+    "Dwarka Sector 21",
+    "Dwarka",
+    "Dwarka Mor",
+    "Nawada",
+    "Uttam Nagar West",
+    "Uttam Nagar East",
+    "Janakpuri West",
+    "Janakpuri East",
+    "Tilak Nagar",
+    "Subhash Nagar",
+    "Tagore Garden",
+    "Rajouri Garden",
+    "Ramesh Nagar",
+    "Moti Nagar",
+    "Kirti Nagar",
+    "Shadipur",
+    "Patel Nagar",
+    "Rajendra Place",
+    "Karol Bagh",
+    "Jhandewalan",
+    "RK Ashram Marg",
+    "Rajiv Chowk",
+    "Barakhamba Road",
+    "Mandi House",
+    "Pragati Maidan",
+    "Yamuna Bank",
+    "Laxmi Nagar",
+    "Nirman Vihar",
+    "Preet Vihar",
+    "Karkarduma",
+    "Anand Vihar",
+    "Kaushambi",
+    "Vaishali"
+  ],
+
+  Yellow: [
+    "Samaypur Badli",
+    "Rohini Sector 18",
+    "Haiderpur",
+    "Jahangirpuri",
+    "Adarsh Nagar",
+    "Azadpur",
+    "Model Town",
+    "Vishwa Vidyalaya",
+    "Vidhan Sabha",
+    "Civil Lines",
+    "Kashmere Gate",
+    "Chandni Chowk",
+    "Chawri Bazar",
+    "New Delhi",
+    "Rajiv Chowk",
+    "Patel Chowk",
+    "Central Secretariat",
+    "Udyog Bhawan",
+    "Lok Kalyan Marg",
+    "Jor Bagh",
+    "INA",
+    "AIIMS",
+    "Green Park",
+    "Hauz Khas",
+    "Malviya Nagar",
+    "Saket",
+    "Qutab Minar",
+    "Chhatarpur",
+    "Sultanpur",
+    "Ghitorni",
+    "Arjan Garh",
+    "Guru Dronacharya",
+    "Sikandarpur",
+    "MG Road",
+    "IFFCO Chowk",
+    "Millennium City Centre Gurugram"
+  ],
+
+  Violet: [
+    "Kashmere Gate",
+    "Lal Qila",
+    "Jama Masjid",
+    "Delhi Gate",
+    "ITO",
+    "Mandi House",
+    "Janpath",
+    "Central Secretariat",
+    "Khan Market",
+    "JLN Stadium",
+    "Jangpura",
+    "Lajpat Nagar",
+    "Moolchand",
+    "Kailash Colony",
+    "Nehru Place",
+    "Kalkaji Mandir",
+    "Govind Puri",
+    "Okhla",
+    "Jasola Apollo",
+    "Sarita Vihar",
+    "Mohan Estate",
+    "Tughlakabad",
+    "Badarpur Border",
+    "Sarai",
+    "NHPC Chowk",
+    "Mewala Maharajpur",
+    "Sector 28",
+    "Badkal Mor",
+    "Old Faridabad",
+    "Neelam Chowk Ajronda",
+    "Bata Chowk",
+    "Escorts Mujesar",
+    "Raja Nahar Singh"
+  ],
+
+  Magenta: [
+    "Botanical Garden",
+    "Okhla Bird Sanctuary",
+    "Kalindi Kunj",
+    "Jasola Vihar Shaheen Bagh",
+    "Okhla Vihar",
+    "Jamia Millia Islamia",
+    "Sukhdev Vihar",
+    "Okhla NSIC",
+    "Sadarjung Enclave",
+    "IIT Delhi",
+    "Hauz Khas",
+    "RK Puram",
+    "Munirka",
+    "Vasant Vihar",
+    "Shankar Vihar",
+    "Terminal 1 IGI Airport",
+    "Palam",
+    "Dabri Mor - Janakpuri South",
+    "Janakpuri West"
+  ],
+
+  Red: [
+    "Rithala",
+    "Rohini West",
+    "Rohini East",
+    "Pitampura",
+    "Kohat Enclave",
+    "Netaji Subhash Place",
+    "Keshav Puram",
+    "Kanhiya Nagar",
+    "Shastri Nagar",
+    "Inderlok",
+    "Pratap Nagar",
+    "Pulbangash",
+    "Tis Hazari",
+    "Kashmere Gate",
+    "Shastri Park",
+    "Seelampur",
+    "Welcome",
+    "Shahdara",
+    "Jhilmil",
+    "Dilshad Garden",
+    "Shaheed Sthal"
+  ],
+
+  Green: [
+    "Inderlok",
+    "Ashok Park Main",
+    "Punjabi Bagh",
+    "Shivaji Park",
+    "Madi Pur",
+    "Paschim Vihar East",
+    "Paschim Vihar West",
+    "Peera Garhi",
+    "Udyog Nagar",
+    "Surajmal Stadium",
+    "Nangloi",
+    "Nangloi Railway Station",
+    "Rajdhani Park",
+    "Mundka",
+    "Ghevra",
+    "Tikri Kalan",
+    "Tikri Border",
+    "Brigadier Hoshiar Singh"
+  ],
+
+  Pink: [
+    "Majlis Park",
+    "Azadpur",
+    "Shalimar Bagh",
+    "Netaji Subhash Place",
+    "Shakurpur",
+    "Punjabi Bagh West",
+    "ESI Hospital",
+    "Mayapuri",
+    "Naraina Vihar",
+    "Delhi Cantonment",
+    "Durgabai Deshmukh South Campus",
+    "Lajpat Nagar",
+    "Vinobapuri",
+    "Ashram",
+    "Sarai Kale Khan - Nizamuddin",
+    "Mayur Vihar-I",
+    "Mayur Vihar Pocket I",
+    "Trilokpuri Sanjay Lake",
+    "IP Extension",
+    "Anand Vihar",
+    "Karkarduma",
+    "Welcome",
+    "Krishna Nagar",
+    "Maujpur-Babarpur",
+    "Jaffrabad",
+    "Shiv Vihar"
+  ],
+
+  Grey: [
+    "Dwarka",
+    "Nangli",
+    "Najafgarh",
+    "Dhansa Bus Stand"
+  ]
+
+};
+
+
+/* =====================================================
+   LINE COLORS
+===================================================== */
+
+const lineColors = {
+
+  Blue: "#0072BC",
+
+  Yellow: "#F2C500",
+
+  Red: "#E53935",
+
+  Green: "#00A651",
+
+  Violet: "#7E57C2",
+
+  Pink: "#E91E8F",
+
+  Magenta: "#D4145A",
+
+  Grey: "#777777"
+
+};
+
+
+/* =====================================================
+   BUILD METRO GRAPH
+===================================================== */
+
+const graph = {};
+
+
+for (const [line, stations] of Object.entries(lines)) {
+
+  for (const station of stations) {
+
+    if (!graph[station]) {
+
+      graph[station] = [];
+
+    }
+
+  }
+
+
+  for (let i = 0; i < stations.length - 1; i++) {
+
+    const a = stations[i];
+
+    const b = stations[i + 1];
+
+
+    graph[a].push({
+      station: b,
+      line: line
+    });
+
+
+    graph[b].push({
+      station: a,
+      line: line
+    });
+
+  }
+
+}
+
+
+/* =====================================================
+   STATION SUGGESTIONS
+===================================================== */
+
+const datalist =
+  document.getElementById("stations");
+
+
+Object.keys(graph)
+  .sort()
+  .forEach(station => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = station;
+
+    datalist.appendChild(option);
+
+  });
+
+
+/* =====================================================
+   FIND WHICH LINE CONNECTS TWO STATIONS
+===================================================== */
+
+function getLineBetween(a, b) {
+
+  for (const [line, stations] of Object.entries(lines)) {
+
+    const aIndex =
+      stations.indexOf(a);
+
+    const bIndex =
+      stations.indexOf(b);
+
+
+    if (
+      aIndex !== -1 &&
+      bIndex !== -1 &&
+      Math.abs(aIndex - bIndex) === 1
+    ) {
+
+      return line;
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =====================================================
+   SHORTEST ROUTE
+===================================================== */
+
+function shortestPath(start, end) {
+
+  const queue = [start];
+
+  const visited =
+    new Set([start]);
+
+  const previous = {};
+
+
+  while (queue.length > 0) {
+
+    const current =
+      queue.shift();
+
+
+    if (current === end) {
+
+      const path = [];
+
+      let station = end;
+
+
+      while (station !== undefined) {
+
+        path.unshift(station);
+
+        station =
+          previous[station];
+
+      }
+
+
+      return path;
+
+    }
+
+
+    for (const connection of graph[current]) {
+
+      const next =
+        connection.station;
+
+
+      if (!visited.has(next)) {
+
+        visited.add(next);
+
+        previous[next] =
+          current;
+
+        queue.push(next);
+
+      }
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =====================================================
+   FIND ROUTE
+===================================================== */
+
+function findRoute() {
+
+  const start =
+    document.getElementById("origin")
+      .value
+      .trim();
+
+
+  const end =
+    document.getElementById("destination")
+      .value
+      .trim();
+
+
+  const result =
+    document.getElementById("result");
+
+
+  if (!start || !end) {
+
+    result.style.display = "block";
+
+    result.innerHTML =
+      `<div class="error">
+        ⚠️ Please select both stations.
+      </div>`;
+
+    return;
+
+  }
+
+
+  if (!graph[start] || !graph[end]) {
+
+    result.style.display = "block";
+
+    result.innerHTML =
+      `<div class="error">
+        ⚠️ Please choose stations from the suggestions.
+      </div>`;
+
+    return;
+
+  }
+
+
+  if (start === end) {
+
+    result.style.display = "block";
+
+    result.innerHTML =
+      `<div class="error">
+        ⚠️ Starting and destination stations cannot be the same.
+      </div>`;
+
+    return;
+
+  }
+
+
+  const path =
+    shortestPath(start, end);
+
+
+  if (!path) {
+
+    result.style.display = "block";
+
+    result.innerHTML =
+      `<div class="error">
+        ❌ No route found.
+      </div>`;
+
+    return;
+
+  }
+
+
+  /* ---------------------------------------------------
+     Determine the line for every journey segment
+  --------------------------------------------------- */
+
+  const segmentLines = [];
+
+
+  for (let i = 0; i < path.length - 1; i++) {
+
+    segmentLines.push(
+      getLineBetween(
+        path[i],
+        path[i + 1]
+      )
+    );
+
+  }
+
+
+  /* ---------------------------------------------------
+     Count interchanges
+  --------------------------------------------------- */
+
+  let interchangeCount = 0;
+
+
+  for (
+    let i = 1;
+    i < segmentLines.length;
+    i++
+  ) {
+
+    if (
+      segmentLines[i] !==
+      segmentLines[i - 1]
+    ) {
+
+      interchangeCount++;
+
+    }
+
+  }
+
+
+  /* ---------------------------------------------------
+     Build route display
+  --------------------------------------------------- */
+
+  let routeHTML = "";
+
+
+  let currentLine =
+    segmentLines[0];
+
+
+  /* First line */
+
+  routeHTML += `
+    <div
+      class="lineTitle"
+      style="color:${lineColors[currentLine]}"
+    >
+      🚇 ${currentLine} Line
+    </div>
+  `;
+
+
+  for (let i = 0; i < path.length; i++) {
+
+    const station =
+      path[i];
+
+
+    /* -------------------------------------------------
+       First station
+    ------------------------------------------------- */
+
+    if (i === 0) {
+
+      routeHTML += `
+        <div class="station">
+
+          <div
+            class="dot"
+            style="
+              background:${lineColors[currentLine]};
+            "
+          ></div>
+
+          <div class="station-name">
+            ${station}
+          </div>
+
+        </div>
+      `;
+
+      continue;
+
+    }
+
+
+    const arrivingLine =
+      segmentLines[i - 1];
+
+
+    /*
+       IMPORTANT:
+
+       We only check for an interchange if
+       there is another station AFTER this one.
+
+       Therefore the destination can NEVER
+       incorrectly show "CHANGE HERE".
+    */
+
+    const isInterchange =
+      i < path.length - 1 &&
+      segmentLines[i] !== arrivingLine;
+
+
+    /* -------------------------------------------------
+       INTERCHANGE STATION
+    ------------------------------------------------- */
+
+    if (isInterchange) {
+
+      const nextLine =
+        segmentLines[i];
+
+
+      routeHTML += `
+        <div class="station">
+
+          <div
+            class="dot"
+            style="
+              background:${lineColors[arrivingLine]};
+            "
+          ></div>
+
+          <div class="station-name">
+            <strong>
+              ${station}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div
+          class="interchange"
+          style="
+            border-left-color:
+            ${lineColors[nextLine]};
+          "
+        >
+
+          <div
+            class="interchange-title"
+            style="
+              color:${lineColors[nextLine]};
+            "
+          >
+            🔄 CHANGE HERE → ${nextLine} Line
+          </div>
+
+          <div class="interchange-sub">
+
+            From
+            <strong
+              style="
+                color:${lineColors[arrivingLine]};
+              "
+            >
+              ${arrivingLine}
+            </strong>
+
+            Line
+
+            →
+            
+            To
+            <strong
+              style="
+                color:${lineColors[nextLine]};
+              "
+            >
+              ${nextLine}
+            </strong>
+
+            Line
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="lineTitle"
+          style="
+            color:${lineColors[nextLine]};
+          "
+        >
+          🚇 ${nextLine} Line
+        </div>
+      `;
+
+
+      currentLine =
+        nextLine;
+
+
+      continue;
+
+    }
+
+
+    /* -------------------------------------------------
+       NORMAL STATION / DESTINATION
+    ------------------------------------------------- */
+
+    routeHTML += `
+      <div class="station">
+
+        <div
+          class="dot"
+          style="
+            background:${lineColors[currentLine]};
+          "
+        ></div>
+
+        <div class="station-name">
+          ${station}
+        </div>
+
+      </div>
+    `;
+
+  }
+
+
+  /* ===================================================
+     ESTIMATES
+  =================================================== */
+
+  const stops =
+    path.length - 1;
+
+
+  const minutes =
+    Math.max(
+      5,
+      Math.round(
+        stops * 2.4 +
+        interchangeCount * 5
+      )
+    );
+
+
+  const fare =
+    Math.min(
+      60,
+      10 +
+      Math.ceil(stops / 4) * 5
+    );
+
+
+  /* ===================================================
+     DISPLAY RESULT
+  =================================================== */
+
+  result.style.display =
+    "block";
+
+
+  result.innerHTML = `
+
+    <div class="routeHeader">
+
+      🚇 ${start}
+      →
+      ${end}
+
+    </div>
+
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <b>
+          ${stops}
+        </b>
+
+        <small>
+          Stops
+        </small>
+
+      </div>
+
+
+      <div class="stat">
+
+        <b>
+          ${interchangeCount}
+        </b>
+
+        <small>
+          Interchanges
+        </small>
+
+      </div>
+
+
+      <div class="stat">
+
+        <b>
+          ~${minutes} min
+        </b>
+
+        <small>
+          Estimated time
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="stat"
+      style="margin-bottom:15px;"
+    >
+
+      <b>
+        ~₹${fare}
+      </b>
+
+      <small>
+        Estimated fare
+      </small>
+
+    </div>
+
+
+    ${routeHTML}
+
+
+    <div class="note">
+
+      Time and fare are estimates for this
+      prototype and should not be treated
+      as official DMRC information.
+
+    </div>
+
+  `;
+
+}
+
+
+/* =====================================================
+   SWAP
+===================================================== */
+
+function swapStations() {
+
+  const origin =
+    document.getElementById("origin");
+
+
+  const destination =
+    document.getElementById("destination");
+
+
+  const temporary =
+    origin.value;
+
+
+  origin.value =
+    destination.value;
+
+
+  destination.value =
+    temporary;
+
+}
+
+</script>
+
+</body>
+</html>
